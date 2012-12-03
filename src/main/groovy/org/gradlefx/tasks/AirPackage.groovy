@@ -16,51 +16,19 @@
 
 package org.gradlefx.tasks
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTreeElement
-import org.gradle.api.tasks.TaskAction
-import org.gradlefx.validators.actions.ValidateAirPackageTaskPropertiesAction
 import org.gradlefx.cli.CompilerOption;
 import org.gradlefx.conventions.FlexType;
-import org.gradlefx.conventions.GradleFxConvention
 
-class AirPackage extends DefaultTask {
+class AirPackage extends AbstractAirPackage {
     
-    private static final String ANT_RESULT_PROPERTY = 'airPackageResult'
-    private static final String ANT_OUTPUT_PROPERTY = 'airPackageOutput'
-
-    GradleFxConvention flexConvention;
-
     public AirPackage() {
-        description = 'Packages the generated swf file into an .air package'
-        flexConvention = (GradleFxConvention) project.convention.plugins.flex
-        
-        dependsOn Tasks.COMPILE_TASK_NAME
+        super();
     }
 
-    @TaskAction
-    def packageAir() {
-        new ValidateAirPackageTaskPropertiesAction().execute(this)
-
-        List compilerArguments = createCompilerArguments()
-
-        ant.java(jar: flexConvention.flexHome + '/lib/adt.jar',
-                fork: true,
-                resultproperty: ANT_RESULT_PROPERTY,
-                outputproperty: ANT_OUTPUT_PROPERTY) {
-
-            compilerArguments.each { compilerArgument ->
-                arg(value: compilerArgument)
-            }
-        }
-
-        handlePackageIfFailed ANT_RESULT_PROPERTY, ANT_OUTPUT_PROPERTY
-
-        showAntOutput ant.properties[ANT_OUTPUT_PROPERTY]
-    }
-
-    private List createCompilerArguments() {
+    @Override
+    def protected List createCompilerArguments() {
         List airOptions = [CompilerOption.PACKAGE]
 
         addAirSigningOptions airOptions
@@ -88,26 +56,4 @@ class AirPackage extends DefaultTask {
             }
         }
     }
-
-    private void addAirSigningOptions(List compilerOptions) {
-        compilerOptions.addAll ([
-                "-storetype",
-                "pkcs12",
-                "-keystore",
-                flexConvention.air.keystore,
-                "-storepass",
-                flexConvention.air.storepass
-        ])
-    }
-
-    def handlePackageIfFailed(antResultProperty, antOutputProperty) {
-        if (ant.properties[antResultProperty] != '0') {
-            throw new Exception("Packaging failed: ${ant.properties[antOutputProperty]}\n")
-        }
-    }
-
-    def showAntOutput(antOutput) {
-        println antOutput
-    }
-    
 }

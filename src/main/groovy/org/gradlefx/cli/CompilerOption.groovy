@@ -134,7 +134,7 @@ public enum CompilerOption {
     DEBUG_PASSWORD("-debug-password"),
     
     /**
-     * Sets the application’s frame rate.
+     * Sets the applicationï¿½s frame rate.
      * 
      * type: int
      * default: 24
@@ -142,7 +142,7 @@ public enum CompilerOption {
     DEFAULT_FRAME_RATE("-default-frame-rate"),
     
     /**
-     * Defines the application’s script execution limits.
+     * Defines the applicationï¿½s script execution limits.
      * The max-recursion-depth value specifies the maximum depth of Adobe Flash Player call stack before Flash Player stops. 
      * This is essentially the stack overflow limit. 
      * The max-execution-time value specifies the maximum duration, in seconds, that an ActionScript event handler can execute 
@@ -165,7 +165,7 @@ public enum CompilerOption {
      * Inserts CSS files into the output the same way that a per-SWC defaults.css file works, 
      * but without having to re-archive the SWC file to test each change.
      * CSS files included in the output with this option have a higher precedence than default CSS files in existing SWCs. 
-     * For example, a CSS file included with this option overrides definitions in framework.swc’s defaults.css file, 
+     * For example, a CSS file included with this option overrides definitions in framework.swcï¿½s defaults.css file, 
      * but it has the same overall precedence as other included CSS files inside the SWC file.
      * This option does not actually insert the CSS file into the SWC file; it simulates it. 
      * When you finish developing the CSS file, you should rebuild the SWC file with the new integrated CSS file.
@@ -346,7 +346,7 @@ public enum CompilerOption {
     
     /**
      * Specifies the resource bundles to link into a resource module. 
-     * All resource bundles specified with this option must be in the compiler’s source path. 
+     * All resource bundles specified with this option must be in the compilerï¿½s source path. 
      * You specify this using the <code>source-path</code> compiler option. 
      * 
      * type: bundle [...]
@@ -400,7 +400,7 @@ public enum CompilerOption {
     KEEP_AS3_METADATA("-keep-as3-metadata"),
     
     /**
-     * Instructs the compiler to keep a style sheet’s type selector in a SWF file, even if that type (the class) is not used in the application. 
+     * Instructs the compiler to keep a style sheetï¿½s type selector in a SWF file, even if that type (the class) is not used in the application. 
      * This is useful when you have a modular application that loads other applications. 
      * For example, the loading SWF file might define a type selector for a type used in the loaded (or, target) SWF file. 
      * If you set this option to true when compiling the loading SWF file, then the target SWF file will have access to that type selector when it is loaded. 
@@ -494,7 +494,7 @@ public enum CompilerOption {
      * If you do not specify a locale, then the compiler uses the default locale from the flex-config.xml file. 
      * You can append additional locales to the default locale by using the += operator. 
      * If you remove the default locale from the flex-config.xml file, and do not specify one on the command line, 
-     * then the compiler will use the machine’s locale.
+     * then the compiler will use the machineï¿½s locale.
      * 
      * type: locale[,...]
      * default: en_US, or null without flex-config.xml
@@ -558,7 +558,7 @@ public enum CompilerOption {
     
     /**
      * Enables the ActionScript optimizer. 
-     * This optimizer reduces file size and increases performance by optimizing the SWF file’s bytecode.
+     * This optimizer reduces file size and increases performance by optimizing the SWF fileï¿½s bytecode.
      * 
      * type: boolean
      * default: true
@@ -595,8 +595,8 @@ public enum CompilerOption {
      * type: classname
      * default:
      * <ul>
-     *  <li>“mx.preloaders.SparkDownloadProgressBar” when compatibility-version is 4.0.0 or greater</li>
-     *  <li>“mx.preloaders.DownloadProgressBar” when compatibility-version is less than 4.0.0</li>
+     *  <li>ï¿½mx.preloaders.SparkDownloadProgressBarï¿½ when compatibility-version is 4.0.0 or greater</li>
+     *  <li>ï¿½mx.preloaders.DownloadProgressBarï¿½ when compatibility-version is less than 4.0.0</li>
      * </ul>
      * <a href="http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7e3c.html">Showing the download progress of an application</a>
      */
@@ -761,17 +761,17 @@ public enum CompilerOption {
      * that are used in your applications and includes those that are required at compile time. 
      * You can use wildcards to include all files and subdirectories of a directory. 
      * To link an entire library SWC file and not individual classes or directories, use the library-path option. 
-     * The source path is also used as the search path for the component compiler’s include-classes and include-resource-bundles options. 
+     * The source path is also used as the search path for the component compilerï¿½s include-classes and include-resource-bundles options. 
      * You can also use the += operator to append the new argument to the list of existing source path entries.
      * 
      * type: path-element [...]
      * default:
      * <ul>
-     *  <li>If source-path is empty, the target file’s directory will be added to source-path.</li>
-     *  <li>If source-path is not empty and if the target file’s directory is a subdirectory of 
+     *  <li>If source-path is empty, the target fileï¿½s directory will be added to source-path.</li>
+     *  <li>If source-path is not empty and if the target fileï¿½s directory is a subdirectory of 
      *  one of the directories in source-path, source-path remains unchanged.</li>
-     *  <li>If source-path is not empty and if the target file’s directory is not a subdirectory of 
-     *  any one of the directories in source-path, the target file’s directory is prepended to source-path.</li>
+     *  <li>If source-path is not empty and if the target fileï¿½s directory is not a subdirectory of 
+     *  any one of the directories in source-path, the target fileï¿½s directory is prepended to source-path.</li>
      * </ul>
      */
     SOURCE_PATH("-source-path"),
@@ -820,8 +820,8 @@ public enum CompilerOption {
      * For Flex 4.5, the default value is 10.2.0. For Flex 4.6, the default value is 11.1.
      * If you do not explicitly set the value of this option, the compiler uses the default from the flex-config.xml file. 
      * The value in flex-config.xml is the version of Flash Player that shipped with the SDK. 
-     * This option is useful if your application’s audience has a specific Player and cannot upgrade. 
-     * You can use this option to “downgrade” your application for that audience. 
+     * This option is useful if your applicationï¿½s audience has a specific Player and cannot upgrade. 
+     * You can use this option to ï¿½downgradeï¿½ your application for that audience. 
      * 
      * type: major_version[.minor_version.revision]
      * <a href="http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7ee0.html">Targeting Flash Player versions</a>
@@ -908,7 +908,7 @@ public enum CompilerOption {
     /**
      * Instructs the application to check the digest of the RSL SWF file against the digest that was compiled into the application at compile time. 
      * This is a security measure that lets you load RSLs from remote domains or different sub-domains. 
-     * It also lets you enforce versioning of your RSLs by forcing an application’s digest to match the RSL’s digest. 
+     * It also lets you enforce versioning of your RSLs by forcing an applicationï¿½s digest to match the RSLï¿½s digest. 
      * If the digests are out of sync, you must recompile your application or load a different RSL SWF file.
      * 
      * type: boolean
@@ -964,7 +964,7 @@ public enum CompilerOption {
     /**
      * Specifies classes to include in the SWC file. You provide the class name (for example, MyClass) rather than 
      * the file name (for example, MyClass.as) to the file for this option. As a result, all classes specified with 
-     * this option must be in the compiler’s source path. You specify this by using the source-path compiler option. 
+     * this option must be in the compilerï¿½s source path. You specify this by using the source-path compiler option. 
      * You can use packaged and unpackaged classes. To use components in namespaces, use the include-namespaces option. 
      * If the components are in packages, ensure that you use dot-notation rather than slashes to separate package levels. 
      * This is the default option for the component compiler.
@@ -1036,6 +1036,11 @@ public enum CompilerOption {
      */
     PACKAGE("-package"),
     
+    /**
+     *  The type of package to create
+     */
+    TARGET("-target"),
+
     /**
      * packages an AIR application as an intermediate file (AIRI), but does not sign it. AIRI files cannot be installed.
      */

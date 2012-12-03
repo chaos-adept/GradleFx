@@ -36,6 +36,8 @@ import org.gradlefx.configuration.sdk.DefaultSdkInitialisationContext
 import org.gradlefx.configuration.sdk.states.flex.DetermineFlexSdkDeclarationTypeState
 import org.gradlefx.configuration.sdk.states.air.DetermineAirSdkDeclarationTypeState
 import org.gradlefx.tasks.CleanSdks;
+import org.gradlefx.tasks.AiriPackage
+import org.gradlefx.tasks.ApkPackage;
 
 class GradleFxPlugin extends AbstractGradleFxPlugin {
 
@@ -52,6 +54,8 @@ class GradleFxPlugin extends AbstractGradleFxPlugin {
         //conditional tasks
         addTask Tasks.ASDOC_TASK_NAME, ASDoc, { flexConvention.type.isLib() }
         addTask Tasks.PACKAGE_TASK_NAME, AirPackage, { flexConvention.type.isNativeApp() }
+        addTask Tasks.PACKAGE_AIRI_TASK_NAME, AiriPackage, { flexConvention.type.isNativeApp() }
+        addTask Tasks.PACKAGE_APK_TASK_NAME, ApkPackage, { flexConvention.type.isNativeApp() }
         addTask Tasks.CREATE_HTML_WRAPPER, HtmlWrapper, { flexConvention.type.isWebApp() }
     }
     

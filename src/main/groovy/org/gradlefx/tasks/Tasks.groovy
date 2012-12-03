@@ -21,6 +21,8 @@ class Tasks {
     public static final String ASDOC_TASK_NAME = 'asdoc'
     public static final String BUILD_TASK_NAME = 'build'
     public static final String PACKAGE_TASK_NAME = 'package'
+    public static final String PACKAGE_AIRI_TASK_NAME = 'packageAiri'
+    public static final String PACKAGE_APK_TASK_NAME = 'packageApk'
     public static final String TEST_TASK_NAME = 'test'
     public static final String PUBLISH_TASK_NAME = 'publish'
     public static final String COPY_RESOURCES_TASK_NAME = 'copyresources'
