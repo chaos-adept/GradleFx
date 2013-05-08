@@ -31,7 +31,10 @@ class IdeaProject extends AbstractIDEProject {
 
     @Override
     protected void createProjectConfig() {
-        throw new Exception('TODO implement IdeaProject')
+        createImlFile()
     }
 
+    void createImlFile() {
+        project.file(project.name + ".iml").createNewFile()
+    }
 }
