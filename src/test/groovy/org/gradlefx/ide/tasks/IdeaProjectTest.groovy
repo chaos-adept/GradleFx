@@ -16,8 +16,8 @@ class IdeaProjectTest {
     }
 
     void given_project_name_is(String projectname) {
-        File projectDir = new File(getClass().getResource("/stub-project-dir").toURI())
-        this.project = ProjectBuilder.builder().withProjectDir(projectDir).withName(projectname).build()
+        File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
+        this.project = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withName(projectname).build()
     }
 
     void when_I_create_project_config() {
