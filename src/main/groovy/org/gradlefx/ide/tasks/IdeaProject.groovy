@@ -35,6 +35,10 @@ class IdeaProject extends AbstractIDEProject {
     }
 
     void createImlFile() {
-        project.file(project.name + ".iml").createNewFile()
+        String path = "/templates/idea/template-iml.xml"
+        InputStream stream = getClass().getResourceAsStream(path)
+
+        writeContent stream, project.file(project.name + ".iml"), true
+        //project.file(project.name + ".iml").createNewFile()
     }
 }
