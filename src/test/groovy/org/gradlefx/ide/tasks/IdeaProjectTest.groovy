@@ -31,7 +31,35 @@ class IdeaProjectTest {
         given_project_name_is("AmandaHuggenkiss")
         given_player_version_is("12")
         when_I_create_project_config()
-        then_the_iml_file_should_have_tag('<option name="TARGET_PLAYER_VERSION" value="12" />')
+        then_the_iml_file_should_have_tag('<option name="TARGET_PLAYER_VERSION" value="12"/>')
+        then_the_iml_file_should_have_tag('<dependencies target-player="12"/>')
+    }
+
+    @Test
+    void should_have_correct_output_file() {
+        given_project_name_is("AmandaHuggenkiss")
+        given_project_type_is("swc")
+        given_project_outputname_is("OliverClothesoff")
+        when_I_create_project_config()
+        then_the_iml_file_should_have_tag('<configuration name="AmandaHuggenkiss" output-type="Library" output-file="OliverClothesoff.swc" output-folder="$MODULE_DIR$/bin-debug">')
+    }
+
+    @Test
+    void should_add_src_dirs() {
+        given_project_name_is("AmandaHuggenkiss")
+        given_src_dirs_is(['src', 'anotherSrc'])
+        when_I_create_project_config()
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false"/>')
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/anotherSrc" isTestSource="false"/>')
+    }
+
+    @Test
+    void should_add_test_src_dirs() {
+        given_project_name_is("AmandaHuggenkiss")
+        given_test_src_dirs_is(['test', 'anotherTest'])
+        when_I_create_project_config()
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true"/>')
+        then_the_iml_file_should_have_tag('<sourceFolder url="file://$MODULE_DIR$/anotherTest" isTestSource="true"/>')
     }
 
     void given_project_name_is(String projectname) {
@@ -41,6 +69,22 @@ class IdeaProjectTest {
 
     void given_player_version_is(String version) {
         ideaProjectTask().flexConvention.playerVersion = version
+    }
+
+    void given_project_type_is(String type) {
+        ideaProjectTask().flexConvention.type = type
+    }
+
+    void given_project_outputname_is(String outputname) {
+        ideaProjectTask().flexConvention.output = outputname
+    }
+
+    void given_src_dirs_is(List<String> dirs) {
+        ideaProjectTask().flexConvention.srcDirs = dirs
+    }
+
+    void given_test_src_dirs_is(List<String> dirs) {
+        ideaProjectTask().flexConvention.testDirs = dirs
     }
 
     void when_I_create_project_config() {

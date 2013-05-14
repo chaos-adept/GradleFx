@@ -6,7 +6,7 @@
   </component>
   <component name="FlexBuildConfigurationManager" active="${project}">
     <configurations>
-      <configuration name="${project}" output-type="Library" output-file="???????" output-folder="$MODULE_DIR$/bin-debug">
+      <configuration name="${project}" output-type="Library" output-file="${artifact}" output-folder="$MODULE_DIR$/bin-debug">
         <!-- TODO target.player dependency ? -->
         <dependencies target-player="${playerVersion}">
         <!--TODO Entries-->
