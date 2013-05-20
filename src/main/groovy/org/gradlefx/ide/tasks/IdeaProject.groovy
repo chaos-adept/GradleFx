@@ -19,19 +19,50 @@ package org.gradlefx.ide.tasks
 
 class IdeaProject extends AbstractIDEProject {
     public static final String NAME = 'idea'
+    private String imlFilename
 
     public IdeaProject() {
         super('IntelliJ IDEA')
     }
-    
+
     @Override
     protected void invalidateConventions() {
         // TODO Auto-generated method stub
     }
-    
+
     @Override
     protected void createProjectConfig() {
-        throw new Exception('TODO implement IdeaProject')
+        imlFilename = project.name + ".iml"
+        createImlFile()
+        addSourceDirs()
     }
-    
+
+    void createImlFile() {
+        String path = "/templates/idea/template-iml.xml"
+        InputStream stream = getClass().getResourceAsStream(path)
+
+        writeContent stream, project.file(imlFilename), true
+    }
+
+    private void addSourceDirs() {
+        editXmlFile imlFilename, { xml ->
+            def component = xml.component.find { it.'@name' == 'NewModuleRootManager' }
+
+            def parent = new Node(component, 'content', [url: "file://\$MODULE_DIR\$"])
+
+            flexConvention.srcDirs.each {
+                new Node(parent, 'sourceFolder', [
+                        url: "file://\$MODULE_DIR\$/" + it,
+                        isTestSource: "false"
+                ])
+            }
+            flexConvention.testDirs.each {
+                new Node(parent, 'sourceFolder', [
+                        url: "file://\$MODULE_DIR\$/" + it,
+                        isTestSource: "true"
+                ])
+            }
+        }
+    }
+
 }
