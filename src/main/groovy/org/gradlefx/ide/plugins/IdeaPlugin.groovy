@@ -25,7 +25,6 @@ class IdeaPlugin extends AbstractGradleFxPlugin {
     @Override
     protected void applyPlugins() {
         super.applyPlugins()
-        applyPlugin()
         applyPlugin 'scaffold'
     }
 

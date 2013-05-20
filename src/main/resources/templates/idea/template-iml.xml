@@ -37,12 +37,12 @@
     <output url="file://$MODULE_DIR$/bin-debug" />
     <output-test url="file://$MODULE_DIR$/bin-debug" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
-        <!-- TODO sources -->
+      <!--<content url="file://$MODULE_DIR$"> -->
+          <!-- TODO sources -->
       <!--<sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />-->
-    </content>
-    <!-- TODO do we set this at all? -->
+      <!--</content> -->
+      <!-- TODO do we set this at all? -->
     <!--<orderEntry type="jdk" jdkName="flex_sdk_4.5.1.21328A" jdkType="Flex SDK Type (new)" />-->
     <orderEntry type="sourceFolder" forTests="false" />
     <!--TODO libs-->

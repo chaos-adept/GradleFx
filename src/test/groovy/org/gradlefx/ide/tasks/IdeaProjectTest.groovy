@@ -6,6 +6,7 @@ import org.gradlefx.conventions.GradleFxConvention
 import org.junit.Before
 import org.junit.Test
 
+import static junit.framework.Assert.assertFalse
 import static junit.framework.Assert.assertTrue
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.core.StringContains.containsString
@@ -42,6 +43,16 @@ class IdeaProjectTest {
         given_project_outputname_is("OliverClothesoff")
         when_I_create_project_config()
         then_the_iml_file_should_have_tag('<configuration name="AmandaHuggenkiss" output-type="Library" output-file="OliverClothesoff.swc" output-folder="$MODULE_DIR$/bin-debug">')
+    }
+
+    @Test
+    void should_be_only_one_content_url() {
+        given_project_name_is("AmandaHuggenkiss")
+        given_project_type_is("swc")
+        given_src_dirs_is(['src'])
+        when_I_create_project_config()
+        then_the_iml_file_should_not_have_tag('<content url="file://$MODULE_DIR$"/>')
+
     }
 
     @Test
@@ -101,6 +112,13 @@ class IdeaProjectTest {
             imlFileContent = project.file(project.name + ".iml").text
         }
         assertTrue(String.format("Could not find %s in %s", tag, imlFileContent), imlFileContent.contains(tag));
+    }
+
+    void then_the_iml_file_should_not_have_tag(String tag) {
+        if (this.imlFileContent == null) {
+            imlFileContent = project.file(project.name + ".iml").text
+        }
+        assertFalse(String.format("Could not find %s in %s", tag, imlFileContent), imlFileContent.contains(tag));
     }
 
     IdeaProject ideaProjectTask() {
