@@ -2,6 +2,7 @@ package org.gradlefx.ide.tasks
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.GradleFxConvention
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +34,7 @@ class IdeaProjectTest {
         given_player_version_is("12")
         when_I_create_project_config()
         then_the_iml_file_should_have_tag('<option name="TARGET_PLAYER_VERSION" value="12"/>')
-        then_the_iml_file_should_have_tag('<dependencies target-player="12"/>')
+        then_the_iml_file_should_have_tag('<dependencies target-player="12">')
     }
 
     @Test
@@ -42,7 +43,7 @@ class IdeaProjectTest {
         given_project_type_is("swc")
         given_project_outputname_is("OliverClothesoff")
         when_I_create_project_config()
-        then_the_iml_file_should_have_tag('<configuration name="AmandaHuggenkiss" output-type="Library" output-file="OliverClothesoff.swc" output-folder="$MODULE_DIR$/bin-debug">')
+        then_the_iml_file_should_have_tag('<configuration name="AmandaHuggenkiss" pure-as="false" output-type="Library" output-file="OliverClothesoff.swc" output-folder="$MODULE_DIR$/bin-debug">')
     }
 
     @Test
@@ -76,6 +77,13 @@ class IdeaProjectTest {
     void given_project_name_is(String projectname) {
         File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
         this.project = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withName(projectname).build()
+        given_project_type_is("swc") //by default, type is required
+        [       Configurations.INTERNAL_CONFIGURATION_NAME.configName(),
+                Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
+                Configurations.MERGE_CONFIGURATION_NAME.configName(),
+                Configurations.RSL_CONFIGURATION_NAME.configName(),
+                Configurations.THEME_CONFIGURATION_NAME.configName()
+        ].each { project.configurations.add(it) }
     }
 
     void given_player_version_is(String version) {

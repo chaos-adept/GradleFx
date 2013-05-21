@@ -86,16 +86,38 @@ class IdeaProjectModuleTest extends Specification {
             def moduleMgr = getModuleRootMgrNode()
             def orderEntry = moduleMgr.orderEntry.find { it.'@type' == "module-library" }
 
-            //todo test filename
-            //todo filepath
             orderEntry.library.'@type'.text() == 'flex'
             orderEntry.library.properties.'@id'.text() == moduleId
             orderEntry.library.CLASSES.root.'@url'.text() == 'jar://$MODULE_DIR$/lib/some.swc!/'
     }
 
+    def "config with project dependency"() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = 'swc'
+            project.getDependencies().add(Configurations.MERGE_CONFIGURATION_NAME.configName(), project.project(':util'))
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            def configuration = getModuleConfNode()
+            def entry = configuration.dependencies.entries.entry.first();
+
+            entry.'@module-name' == 'util'
+            entry.'@build-configuration-name' == 'util'
+            entry.dependency.'@linkage'.text() == 'Merged'
+
+            def moduleMgr = getModuleRootMgrNode()
+            def orderEntry = moduleMgr.orderEntry.find { it.'@type' == "module" }
+            //<orderEntry type="module" module-name="util" />
+            orderEntry.'@module-name' == 'util'
+    }
+
     def setupProjectWithName(String projectName) {
+        //todo extract
         File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
-        this.project = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withName(projectName).build()
+        Project root = ProjectBuilder.builder().withProjectDir(projectDir.parentFile).withName('root').build()
+        Project utilProject = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withParent(root).withName('util').build()
+        this.project = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withParent(root).withName(projectName).build()
 
         [
                 Configurations.INTERNAL_CONFIGURATION_NAME.configName(),

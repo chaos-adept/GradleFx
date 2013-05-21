@@ -17,6 +17,10 @@
 package org.gradlefx.ide.tasks
 
 import org.apache.commons.io.FilenameUtils
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
+import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
+import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FrameworkLinkage
 import static java.util.UUID.randomUUID
 
@@ -47,6 +51,39 @@ class IdeaProject extends AbstractIDEProject {
             def entries = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
                     .configurations.configuration.dependencies.entries.first()
             def rootMgr = xml.component.find { it.'@name' == 'NewModuleRootManager' }
+
+            [
+                    Configurations.INTERNAL_CONFIGURATION_NAME.configName(),
+                    Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
+                    Configurations.MERGE_CONFIGURATION_NAME.configName(),
+                    Configurations.RSL_CONFIGURATION_NAME.configName(),
+                    Configurations.THEME_CONFIGURATION_NAME.configName()
+            ].each { type ->
+                project.configurations[type].allDependencies.each { Dependency dependency ->
+
+                    if (dependency instanceof DefaultProjectDependency) {
+                        def projectDependency = dependency as DefaultProjectDependency;
+                        def entryProjectRef = new Node(entries, 'entry', ['module-name':projectDependency.dependencyProject.name, 'build-configuration-name':projectDependency.dependencyProject.name])
+                        new Node(entryProjectRef, 'dependency', ['linkage':'Merged'])
+                        new Node(rootMgr, 'orderEntry', [type:"module", 'module-name':projectDependency.dependencyProject.name]);
+                    } else if (dependency instanceof DefaultSelfResolvingDependency) {
+                        def selfDependency = dependency as DefaultSelfResolvingDependency;
+                        selfDependency.source.files.each { file ->
+                            def uuid = randomUUID()
+                            def entry = new Node(entries, 'entry', ['library-id': uuid])
+                            new Node(entry, 'dependency', ['linkage':'Merged'])
+
+                            def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
+                            def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
+                            new Node(libNode, 'properties', [id:uuid])
+                            def classes = new Node(libNode, 'CLASSES')
+                            new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
+                        }
+                    }
+                }
+
+            }
+            /*
             eachDependencyFile { file, type ->
                 def uuid = randomUUID()
                 def entry = new Node(entries, 'entry', ['library-id': uuid])
@@ -58,6 +95,7 @@ class IdeaProject extends AbstractIDEProject {
                 def classes = new Node(libNode, 'CLASSES')
                 new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
             }
+            */
         }
     }
 
