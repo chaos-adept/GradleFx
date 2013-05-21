@@ -16,6 +16,8 @@
 
 package org.gradlefx.ide.tasks
 
+import org.gradlefx.conventions.FrameworkLinkage
+
 
 class IdeaProject extends AbstractIDEProject {
     public static final String NAME = 'idea'
@@ -34,6 +36,7 @@ class IdeaProject extends AbstractIDEProject {
     protected void createProjectConfig() {
         imlFilename = project.name + ".iml"
         createImlFile()
+        updateConfiguration()
         addSourceDirs()
     }
 
@@ -42,6 +45,13 @@ class IdeaProject extends AbstractIDEProject {
         InputStream stream = getClass().getResourceAsStream(path)
 
         writeContent stream, project.file(imlFilename), true
+    }
+
+    private void updateConfiguration() {
+        editXmlFile imlFilename, { xml ->
+            def configuration = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }.configurations.configuration
+            configuration.@'pure-as' = flexConvention.frameworkLinkage == FrameworkLinkage.none;
+        }
     }
 
     private void addSourceDirs() {
