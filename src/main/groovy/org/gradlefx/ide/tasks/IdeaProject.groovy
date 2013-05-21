@@ -16,8 +16,9 @@
 
 package org.gradlefx.ide.tasks
 
+import org.apache.commons.io.FilenameUtils
 import org.gradlefx.conventions.FrameworkLinkage
-
+import static java.util.UUID.randomUUID
 
 class IdeaProject extends AbstractIDEProject {
     public static final String NAME = 'idea'
@@ -38,6 +39,26 @@ class IdeaProject extends AbstractIDEProject {
         createImlFile()
         updateConfiguration()
         addSourceDirs()
+        addDependencies()
+    }
+
+    def addDependencies() {
+        editXmlFile imlFilename, { xml ->
+            def entries = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
+                    .configurations.configuration.dependencies.entries.first()
+            def rootMgr = xml.component.find { it.'@name' == 'NewModuleRootManager' }
+            eachDependencyFile { file, type ->
+                def uuid = randomUUID()
+                def entry = new Node(entries, 'entry', ['library-id': uuid])
+                new Node(entry, 'dependency', ['linkage':'Merged'])
+
+                def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
+                def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
+                new Node(libNode, 'properties', [id:uuid])
+                def classes = new Node(libNode, 'CLASSES')
+                new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
+            }
+        }
     }
 
     void createImlFile() {

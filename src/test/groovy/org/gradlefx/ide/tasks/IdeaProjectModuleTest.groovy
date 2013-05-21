@@ -2,6 +2,7 @@ package org.gradlefx.ide.tasks
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradlefx.configuration.Configurations
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
 import spock.lang.Specification
@@ -70,9 +71,40 @@ class IdeaProjectModuleTest extends Specification {
             configuration.'@pure-as'.text() == "false"
     }
 
+    def "config with swc dependency"() {
+        given:
+            setupProjectWithName "test"
+            ideaProjectTask.flexConvention.type = 'swc'
+            project.getDependencies().add(Configurations.MERGE_CONFIGURATION_NAME.configName(), project.files('lib/some.swc'))
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            def configuration = getModuleConfNode()
+            def moduleId = configuration.dependencies.entries.entry.'@library-id'.text();
+            moduleId != null
+            configuration.dependencies.entries.entry.dependency.'@linkage'.text() == 'Merged'
+            def moduleMgr = getModuleRootMgrNode()
+            def orderEntry = moduleMgr.orderEntry.find { it.'@type' == "module-library" }
+
+            //todo test filename
+            //todo filepath
+            orderEntry.library.'@type'.text() == 'flex'
+            orderEntry.library.properties.'@id'.text() == moduleId
+            orderEntry.library.CLASSES.root.'@url'.text() == 'jar://$MODULE_DIR$/lib/some.swc!/'
+    }
+
     def setupProjectWithName(String projectName) {
         File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
         this.project = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withName(projectName).build()
+
+        [
+                Configurations.INTERNAL_CONFIGURATION_NAME.configName(),
+                Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),
+                Configurations.MERGE_CONFIGURATION_NAME.configName(),
+                Configurations.RSL_CONFIGURATION_NAME.configName(),
+                Configurations.THEME_CONFIGURATION_NAME.configName()
+        ].each { project.configurations.add(it) }
+
     }
 
     def getModuleConfNode() {
@@ -84,6 +116,18 @@ class IdeaProjectModuleTest extends Specification {
         configManager != null
 
         return configManager.configurations.configuration
+    }
+
+
+    def getModuleRootMgrNode() {
+        File imlFile = project.file("${project.name}.iml")
+        def xml = new XmlParser().parse(imlFile);
+
+        def configManager = xml.component.find { it ->
+            it.@name == "NewModuleRootManager" }
+        configManager != null
+
+        return configManager
     }
 
 }
