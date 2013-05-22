@@ -44,6 +44,17 @@ class IdeaProject extends AbstractIDEProject {
         updateConfiguration()
         addSourceDirs()
         addDependencies()
+        updateFlexSdk()
+    }
+
+    def updateFlexSdk() {
+        editXmlFile imlFilename, { xml ->
+            if (!project.hasProperty('ideaFxModuleSdkName')) {
+                return
+            }
+            def rootMgr = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
+            rootMgr.configurations.configuration.dependencies.sdk.@'name' = project.property('ideaFxModuleSdkName')
+        }
     }
 
     def addDependencies() {
@@ -83,19 +94,6 @@ class IdeaProject extends AbstractIDEProject {
                 }
 
             }
-            /*
-            eachDependencyFile { file, type ->
-                def uuid = randomUUID()
-                def entry = new Node(entries, 'entry', ['library-id': uuid])
-                new Node(entry, 'dependency', ['linkage':'Merged'])
-
-                def orderEntry = new Node(rootMgr, 'orderEntry', [type:"module-library"]);
-                def libNode = new Node(orderEntry, 'library', [name:file.name, type:"flex"])
-                new Node(libNode, 'properties', [id:uuid])
-                def classes = new Node(libNode, 'CLASSES')
-                new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
-            }
-            */
         }
     }
 

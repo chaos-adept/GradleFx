@@ -112,13 +112,34 @@ class IdeaProjectModuleTest extends Specification {
             orderEntry.'@module-name' == 'util'
     }
 
+    def "setup flex sdk"() {
+        given:
+            setupProjectWithName "test"
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            def configuration = getModuleConfNode()
+            configuration.dependencies.sdk.'@name'.text() == 'default_flex_sdk'
+    }
+
+    def "setup flex sdk with custom name"() {
+        given:
+            setupProjectWithName "test"
+            project.setProperty 'ideaFxModuleSdkName', 'customname_flex_sdk'
+        when:
+            ideaProjectTask.createProjectConfig()
+        then:
+            def configuration = getModuleConfNode()
+            configuration.dependencies.sdk.'@name'.text() == 'customname_flex_sdk'
+    }
+
     def setupProjectWithName(String projectName) {
         //todo extract
         File projectDir = new File(this.getClass().getResource("/stub-project-dir/intellij-dummy.xml").toURI())
         Project root = ProjectBuilder.builder().withProjectDir(projectDir.parentFile).withName('root').build()
         Project utilProject = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withParent(root).withName('util').build()
         this.project = ProjectBuilder.builder().withProjectDir(projectDir.getParentFile()).withParent(root).withName(projectName).build()
-
+        ideaProjectTask.flexConvention.type = 'swc'
         [
                 Configurations.INTERNAL_CONFIGURATION_NAME.configName(),
                 Configurations.EXTERNAL_CONFIGURATION_NAME.configName(),

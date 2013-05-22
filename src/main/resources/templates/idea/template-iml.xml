@@ -21,7 +21,7 @@
             </entry>
           </entries>-->
           <!-- TODO Can sdk name be set? We have no clue on what sdk's IntelliJ have in settings? -->
-          <!--<sdk name="flex_sdk_4.5.1.21328A" />-->
+          <sdk name="default_flex_sdk" />
         </dependencies>
         <!-- TODO compiler options -->
         <compiler-options />
