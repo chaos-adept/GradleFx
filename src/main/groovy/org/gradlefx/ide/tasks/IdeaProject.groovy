@@ -81,7 +81,7 @@ class IdeaProject extends AbstractIDEProject {
                     } else if (dependency instanceof DefaultSelfResolvingDependency) {
                         def selfDependency = dependency as DefaultSelfResolvingDependency;
                         selfDependency.source.files.each { file ->
-                            def uuid = randomUUID()
+                            def String uuid = file.name
                             def entry = new Node(entries, 'entry', ['library-id': uuid])
                             new Node(entry, 'dependency', ['linkage':'Merged'])
 
@@ -90,6 +90,8 @@ class IdeaProject extends AbstractIDEProject {
                             new Node(libNode, 'properties', [id:uuid])
                             def classes = new Node(libNode, 'CLASSES')
                             new Node(classes, 'root', [url:"jar://\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(file))}!/"]);
+                            new Node(libNode, 'JAVADOC');
+                            new Node(libNode, 'SOURCES');
                         }
                     }
                 }
