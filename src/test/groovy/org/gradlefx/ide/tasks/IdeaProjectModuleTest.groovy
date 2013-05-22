@@ -120,6 +120,7 @@ class IdeaProjectModuleTest extends Specification {
         then:
             def configuration = getModuleConfNode()
             configuration.dependencies.sdk.'@name'.text() == 'default_flex_sdk'
+            getModuleRootMgrNode().orderEntry.find { it.'@type' == "jdk" }.'@jdkName' == 'default_flex_sdk'
     }
 
     def "setup flex sdk with custom name"() {
@@ -131,6 +132,7 @@ class IdeaProjectModuleTest extends Specification {
         then:
             def configuration = getModuleConfNode()
             configuration.dependencies.sdk.'@name'.text() == 'customname_flex_sdk'
+            getModuleRootMgrNode().orderEntry.find { it.'@type' == 'jdk' }.'@jdkName' == 'customname_flex_sdk'
     }
 
     def setupProjectWithName(String projectName) {

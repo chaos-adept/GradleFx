@@ -54,6 +54,7 @@ class IdeaProject extends AbstractIDEProject {
             }
             def rootMgr = xml.component.find { it.'@name' == 'FlexBuildConfigurationManager' }
             rootMgr.configurations.configuration.dependencies.sdk.@'name' = project.property('ideaFxModuleSdkName')
+            xml.component.find { it.'@name' == 'NewModuleRootManager' }.orderEntry.find { it.'@type' == 'jdk' }.@'jdkName' = project.property('ideaFxModuleSdkName')
         }
     }
 
