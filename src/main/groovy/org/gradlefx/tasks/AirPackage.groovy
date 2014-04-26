@@ -81,7 +81,7 @@ class AirPackage extends DefaultTask {
 
     private void addFiles(List compilerOptions) {
         flexConvention.air.includeFileTrees.each { ConfigurableFileTree fileTree ->
-            compilerOptions.add "-C"
+            compilerOptions.add CompilerOption.CHANGE_DIRECTORY.optionName
             compilerOptions.add fileTree.dir.absolutePath
 
             fileTree.visit { FileTreeElement file ->
@@ -90,15 +90,17 @@ class AirPackage extends DefaultTask {
                 }
             }
         }
+
+        compilerOptions.addAll(flexConvention.air.fileOptions)
     }
 
     private void addAirSigningOptions(List compilerOptions) {
         compilerOptions.addAll ([
-                "-storetype",
+                CompilerOption.STORE_TYPE,
                 "pkcs12",
-                "-keystore",
+                CompilerOption.KEYSTORE,
                 flexConvention.air.keystore,
-                "-storepass",
+                CompilerOption.STOREPASS,
                 flexConvention.air.storepass
         ])
     }

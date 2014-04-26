@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gradlefx.tasks.mobile
 
-/**
- * Packages the mobile app for the simulator.
+package org.gradlefx.util
+
+/*
+ * Extracts a (fully qualified) class name from a certain file path.
  */
-class SimulatorAirMobilePackage extends BaseAirMobilePackage {
+class PathToClassNameExtractor {
 
+    def fileExtensionPattern = /\.(as|mxml)$/
 
-    @Override
-    String getTarget() {
-        return airMobile.simulatorTarget
-    }
-
-    @Override
-    def getOutputPath() {
-        return InstallAppUtils.getSimulatorOutputPath(flexConvention, project)
-    }
-
-    def addPlatformSdkParams() {
-        if(flexConvention.airMobile.simulatorPlatformSdk != null) {
-            addArgs "-platformsdk", flexConvention.airMobile.simulatorPlatformSdk
-        }
+    def String convertPathStringToFullyQualifiedClassName(path) {
+        return path.replaceAll("[\\/]", ".").replaceAll(fileExtensionPattern,"")
     }
 }
-

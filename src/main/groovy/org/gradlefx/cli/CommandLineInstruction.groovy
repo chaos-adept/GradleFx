@@ -19,6 +19,8 @@ package org.gradlefx.cli
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolveException
+import org.gradlefx.configuration.Configurations
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.FlexType
 import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
@@ -48,7 +50,9 @@ abstract class CommandLineInstruction {
 
         if (!linkage.usesFlex()) {
             //it's a pure AS project: we don't want to load the Flex configuration
-            reset CompilerOption.LOAD_CONFIG
+            if (flexConvention.sdkTypes.contains(SdkType.Flex)) {
+                reset CompilerOption.LOAD_CONFIG
+            }
 
             //but we need to add playerglobal.swc to the build path explicitly
             def flexConfig = new XmlSlurper().parse(flexConvention.configPath)
@@ -73,7 +77,7 @@ abstract class CommandLineInstruction {
 
     /** Adds the <code>-source-path</code> argument based on project.srcDirs and project.localeDir */
     public void addSourcePaths() {
-        addAll CompilerOption.SOURCE_PATH, getValidSourcePaths()
+        addAll CompilerOption.SOURCE_PATH, filterValidSourcePaths(flexConvention.srcDirs)
 
         //add locale path to source paths if any locales are defined
         if (flexConvention.locales && flexConvention.locales.size()) {
@@ -81,10 +85,10 @@ abstract class CommandLineInstruction {
         }
     }
 
-    protected Collection<String> getValidSourcePaths() {
+    protected Collection<String> filterValidSourcePaths(List<String> sourcePaths) {
         //don't allow non existing source paths unless they contain a token (e.g. {locale})
         //TODO {} tokens can be validated earlier: locale paths should be in localeDir property
-        return flexConvention.srcDirs
+        return sourcePaths
                 .findAll { String path -> project.file(path).exists() || path.contains('{') }
                 .collect { project.file(it).path }
     }
@@ -195,7 +199,6 @@ abstract class CommandLineInstruction {
                 jar: "$flexConvention.flexHome/lib/${antTask}.jar",
                 dir: "$flexConvention.flexHome/frameworks",
                 fork: true,
-                maxmemory: "1024m",
                 resultproperty: antResultProperty,
                 outputproperty: antOutputProperty
         ) {

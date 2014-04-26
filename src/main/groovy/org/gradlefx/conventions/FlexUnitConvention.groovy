@@ -20,8 +20,13 @@ import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
 
 
+/**
+ * All FlexUnit conventions.
+ * Documentation of all the options can be found here: http://docs.flexunit.org/index.php?title=Ant_Task
+ */
 class FlexUnitConvention {
-    
+
+    private String template //can be used for a custom template
     private String player           = 'flash'
     private String command          = System.getenv()['FLASH_PLAYER_EXE']
     private String toDir
@@ -29,6 +34,7 @@ class FlexUnitConvention {
     private Boolean haltOnFailure   = false
     private Boolean verbose         = false
     private Boolean localTrusted    = true
+    private Boolean ignoreFailures  = false
     private int port                = 1024
     private int buffer              = 262144
     private int timeout             = 60000 //60 seconds
@@ -37,6 +43,9 @@ class FlexUnitConvention {
     private int display             = 99
     private List <String> includes  = ['**/*Test.as']
     private List <String> excludes  = []
+    private String swfName          = 'TestRunner.swf'
+    //list of additional compiler options as defined by the compc or mxmlc compiler
+    private List <String> additionalCompilerOptions = []
     
     public FlexUnitConvention(Project project) {
         toDir       = "${project.buildDir}/reports"
@@ -45,6 +54,14 @@ class FlexUnitConvention {
 
     void configure(Closure closure) {
         ConfigureUtil.configure(closure, this)
+    }
+
+    String getTemplate() {
+        return template
+    }
+
+    void template(String template) {
+        this.template = template
     }
 
     String getPlayer() {
@@ -101,6 +118,14 @@ class FlexUnitConvention {
 
     void localTrusted(Boolean localTrusted) {
         this.localTrusted = localTrusted
+    }
+
+    Boolean getIgnoreFailures() {
+        return ignoreFailures
+    }
+
+    void ignoreFailures(Boolean ignoreFailures) {
+        this.ignoreFailures = ignoreFailures
     }
 
     int getPort() {
@@ -165,5 +190,21 @@ class FlexUnitConvention {
 
     void excludes(List<String> excludes) {
         this.excludes = excludes
+    }
+
+    String getSwfName() {
+        return swfName
+    }
+
+    void swfName(String name) {
+        this.swfName = name
+    }
+
+    List<String> getAdditionalCompilerOptions() {
+        return additionalCompilerOptions
+    }
+
+    void additionalCompilerOptions(List<String> options) {
+        this.additionalCompilerOptions = options
     }
 }

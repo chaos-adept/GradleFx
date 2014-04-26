@@ -20,6 +20,7 @@ import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.internal.nativeplatform.filesystem.FileSystems
+import org.gradlefx.configuration.sdk.SdkType
 import org.gradlefx.conventions.adl.AdlConvention
 
 
@@ -43,6 +44,9 @@ class GradleFxConvention {
         //convert relative paths to absolute ones to prevent ANT from freaking out
         this.flexHome = flexHome ? new File(flexHome).absolutePath : null
     }
+
+    //The name you want to give to the SDK
+    String flexSdkName
 
     // which directories to look into for source code
     List <String> srcDirs = ['src/main/actionscript']
@@ -117,7 +121,7 @@ class GradleFxConvention {
     //SDK autoinstall properties
     SdkAutoInstallConvention sdkAutoInstall
 
-
+    //adl convention propeperties
     AdlConvention adl
 
     def GradleFxConvention(Project project) {
@@ -134,6 +138,10 @@ class GradleFxConvention {
         sdkAutoInstall  = new SdkAutoInstallConvention()
         adl             = new AdlConvention()
     }
+
+    /**
+     * Complex convention setters
+     */
 
     def htmlWrapper(Closure closure) {
         htmlWrapper.configure(closure)

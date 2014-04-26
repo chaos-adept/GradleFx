@@ -28,7 +28,9 @@ import org.gradlefx.conventions.FrameworkLinkage
 import static java.util.UUID.randomUUID
 
 class IdeaProject extends AbstractIDEProject {
+
     public static final String NAME = 'idea'
+
     private String imlFilename
 
     public IdeaProject() {
@@ -37,7 +39,7 @@ class IdeaProject extends AbstractIDEProject {
 
     @Override
     protected void invalidateConventions() {
-        // TODO Auto-generated method stub
+        //nothing to do here
     }
 
     @Override
@@ -80,9 +82,9 @@ class IdeaProject extends AbstractIDEProject {
                     break;
             }
 
-            if (project.hasProperty('ideaFxModuleSdkName')) {
-                dependencies.sdk.@'name' = project.property('ideaFxModuleSdkName')
-                xml.component.find { it.'@name' == 'NewModuleRootManager' }.orderEntry.find { it.'@type' == 'jdk' }.@'jdkName' = project.property('ideaFxModuleSdkName')
+            if (flexConvention.flexSdkName != null) {
+                dependencies.sdk.@'name' = flexConvention.flexSdkName
+                xml.component.find { it.'@name' == 'NewModuleRootManager' }.orderEntry.find { it.'@type' == 'jdk' }.@'jdkName' = flexConvention.flexSdkName
             }
 
         }
@@ -146,9 +148,6 @@ class IdeaProject extends AbstractIDEProject {
                 "Test"
                 break;
         }
-
-
-
     }
 
     void createImlFile() {
@@ -174,7 +173,7 @@ class IdeaProject extends AbstractIDEProject {
 
             //setup platform
 
-            def Boolean isNativeLib = false;
+            def isNativeLib = false;
             flexConvention.compilerArgs.every { String it ->
                 isNativeLib = it == '+configname=air'
                 return !isNativeLib
@@ -227,8 +226,8 @@ class IdeaProject extends AbstractIDEProject {
                                      'use-temp-certificate':false,
                                      sdk:flexConvention.airMobile.platformSdk
                                     ];
-                        if (flexConvention.airMobile.provisioning_profile != null) {
-                            attrs['provisioning-profile-path']  = "\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.airMobile.provisioning_profile))}"
+                        if (flexConvention.airMobile.provisioningProfile != null) {
+                            attrs['provisioning-profile-path']  = "\$MODULE_DIR\$/${FilenameUtils.separatorsToUnix(project.relativePath(flexConvention.airMobile.provisioningProfile))}"
                         }
 
                         new Node(packaging, 'AirSigningOptions', attrs)

@@ -22,8 +22,6 @@ import org.gradlefx.configuration.sdk.SdkInitialisationContext
 import org.gradlefx.configuration.sdk.SdkInstallLocation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.gradle.api.file.FileTree
-import org.gradle.api.file.FileVisitDetails
 import org.gradlefx.configuration.sdk.states.unpacking.SdkZipUnpacker
 import org.gradlefx.configuration.sdk.states.unpacking.SdkTarGzUnpacker
 import org.gradlefx.configuration.sdk.states.unpacking.SdkTbz2Unpacker
@@ -56,6 +54,7 @@ abstract class AbstractInstallSdkState implements SdkInitState {
         try {
             unpackSdk()
             downloadSdkDependencies()
+            allowExecutionPermissionsOnSdkFiles()
         } catch (Exception e) {
             revertInstall()
 
@@ -83,11 +82,21 @@ abstract class AbstractInstallSdkState implements SdkInitState {
         sdkInstallLocation.directory.deleteDir()
     }
 
+    SdkInitState nextState() {
+        return null //the end
+    }
 
     /**
      * Override this method when addition dependencies are required for the SDK.
      */
     protected void downloadSdkDependencies() {
+    }
+
+    /**
+     * Set execution permissions on all SDK files to avoid problems with this.
+     */
+    void allowExecutionPermissionsOnSdkFiles() {
+        sdkInstallLocation.directory.traverse { it.setExecutable(true, false) }
     }
 
 }

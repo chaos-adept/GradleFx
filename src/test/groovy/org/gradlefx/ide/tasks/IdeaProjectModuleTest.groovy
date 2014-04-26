@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2011 the original author or authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.gradlefx.ide.tasks
 
 import org.gradle.api.Project
@@ -8,17 +24,14 @@ import org.gradlefx.conventions.FrameworkLinkage
 import org.gradlefx.conventions.GradleFxConvention
 import spock.lang.Specification
 
-import static junit.framework.Assert.assertTrue
-
 /**
  * @author <a href="mailto:drykovanov@wiley.com">Denis Rykovanov</a>
- * @since 21.05.13
  */
 class IdeaProjectModuleTest extends Specification {
 
     IdeaProject getIdeaProjectTask() {
         if (_ideaFxProjectTask == null) {
-            _ideaFxProjectTask = project.tasks.add("ideafx", IdeaProject)
+            _ideaFxProjectTask = project.tasks.create("ideafx", IdeaProject)
             GradleFxConvention pluginConvention = new GradleFxConvention(project)
             _ideaFxProjectTask.flexConvention = pluginConvention
             _ideaFxProjectTask.flexConvention.playerVersion = "11.5"
@@ -42,7 +55,7 @@ class IdeaProjectModuleTest extends Specification {
             ideaProjectTask.createProjectConfig()
         then:
             File imlFile = project.file("${project.name}.iml")
-            imlFile.exists() == true
+            imlFile.exists()
     }
 
     def "config for pure web lib"() {
@@ -152,7 +165,7 @@ class IdeaProjectModuleTest extends Specification {
     def "setup flex sdk with custom name"() {
         given:
             setupProjectWithName "test"
-            project.setProperty 'ideaFxModuleSdkName', 'customname_flex_sdk'
+            ideaProjectTask.flexConvention.flexSdkName = 'customname_flex_sdk'
         when:
             ideaProjectTask.createProjectConfig()
         then:
@@ -240,7 +253,7 @@ class IdeaProjectModuleTest extends Specification {
             ideaProjectTask.flexConvention.type = FlexType.mobile
             ideaProjectTask.flexConvention.airMobile.platform = 'ios'
             ideaProjectTask.flexConvention.airMobile.platformSdk = '/ios_sdk'
-            ideaProjectTask.flexConvention.airMobile.provisioning_profile = 'provisioning-profile.mobileprovision'
+            ideaProjectTask.flexConvention.airMobile.provisioningProfile = 'provisioning-profile.mobileprovision'
 
             ideaProjectTask.flexConvention.air.keystore = 'somecert.p12'
         when:
@@ -332,7 +345,7 @@ class IdeaProjectModuleTest extends Specification {
                 Configurations.RSL_CONFIGURATION_NAME.configName(),
                 Configurations.THEME_CONFIGURATION_NAME.configName(),
                 Configurations.TEST_CONFIGURATION_NAME.configName()
-        ].each { project.configurations.add(it) }
+        ].each { project.configurations.create(it) }
 
     }
 
